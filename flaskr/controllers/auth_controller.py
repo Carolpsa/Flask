@@ -22,4 +22,4 @@ def login():
         return {"msg": "Bad password"}, HTTPStatus.UNAUTHORIZED
 
     access_token = create_access_token(identity=user.id)
-    return {'access_token':access_token}
+    return {'access_token': access_token}

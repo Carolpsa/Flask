@@ -17,5 +17,6 @@ def requires_roles(role_name):
         return envelope
     return decorator
 
+# funcao elaborada apenas para teste
 def eleva_ao_quadrado(x):
     return x**2
