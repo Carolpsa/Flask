@@ -20,5 +20,5 @@ def role_list():
     roles = db.session.execute(db.select(Role).order_by(Role.id)).scalars()
     result = []
     for role in roles:
-        result.append({"id": role.id, "name":role.name})
+        result.append({'id': role.id, 'name':role.name})
     return result

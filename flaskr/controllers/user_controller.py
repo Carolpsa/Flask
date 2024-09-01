@@ -31,16 +31,16 @@ def user_detail(id):
     try:
         user = db.get_or_404(User, id)
     except:
-        return('Usuario nao localizado!'), HTTPStatus.NOT_FOUND
-    return{"id": user.id,"username":user.username, "password": user.password, "role_id": user.role_id}
+        return{'msg': 'Usuario nao localizado!'}, HTTPStatus.NOT_FOUND
+    return{'id': user.id,'username':user.username, 'password': user.password, 'role_id': user.role_id}
 
-@appb.route('/delete<int:id>', methods=['POST'])
+@appb.route('/delete<int:id>', methods=['GET', 'POST'])
 @jwt_required()
 def user_delete(id):
     try:
         user = db.get_or_404(User, id)
     except:
-        return('Usuario nao localizado!'), HTTPStatus.NOT_FOUND
+        return {'msg':'Usuario nao localizado!'}, HTTPStatus.NOT_FOUND
     if request.method == "POST":
         db.session.delete(user)
         db.session.commit()
@@ -53,7 +53,7 @@ def user_list():
     users = db.session.execute(db.select(User).order_by(User.id)).scalars()
     result = []
     for user in users:
-        result.append({"id": user.id, "username":user.username, "password": user.password, "role_id": user.role_id})
+        result.append({'id': user.id, 'username':user.username, 'password': user.password, 'role_id': user.role_id})
     return result
 
 @appb.route('/update<int:id>', methods=['PATCH'])
@@ -63,16 +63,16 @@ def update_user(id):
     try:
         user = db.get_or_404(User, id)
     except:
-        return('Usuario nao localizado!'), HTTPStatus.NOT_FOUND
+        return({'msg':'Usuario nao localizado!'}, HTTPStatus.NOT_FOUND)
     if 'username' in data:
         user.username = data['username']
         db.session.commit()
-        return{"id": user.id,"username":user.username}
+        return{'id': user.id,'username':user.username}
     if 'password' in data:
         user.password = data['password']
         db.session.commit()
-        return{"id": user.id,"password": user.password}
+        return{'id': user.id,'password': user.password}
     if 'role_id' in data:
         user.role_id = data['role_id']
         db.session.commit()
-        return{"id": user.id,"role_id": user.role_id}
+        return{'id': user.id,'role_id': user.role_id}
