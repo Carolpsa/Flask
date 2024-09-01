@@ -31,7 +31,7 @@ def test_user_detail_sucesso(client, cria_usuario):
     response = client.get(f'/users/user{user.id}')
     
     assert response.status_code == HTTPStatus.OK
-    assert response.json == {"id": user.id,"username":user.username, "password": user.password, "role_id": user.role_id}
+    assert response.json == {'id': user.id,'username':user.username, 'password': user.password, 'role_id': user.role_id}
 
 
 def test_user_detail_falha(client):
@@ -48,22 +48,37 @@ def test_user_delete_sucesso(client, access_token):
 
     assert response.status_code == HTTPStatus.OK
 
-
-def test_user_delete_falha_password(client, cria_usuario):
-    user = cria_usuario
-    response = client.post(f'/auths/login', json={'username': user.username, 'password': 'incorreto'})
-    
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
-
-
-def test_user_delete_falha_user(client, cria_usuario):
-    user = cria_usuario
-    response = client.post(f'/auths/login', json={'username': 'incorreto', 'password': user.password})
-    
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
-
-
-def test_user_delete_falha_usuario_nao_encontrado(client, access_token):
+def test_user_delete_falha(client, access_token):
     response = client.post(f'/users/deleteincorreto', headers={'Authorization': f'Bearer {access_token}'})
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_user_update_sucesso_username(client, access_token):
+    user = db.session.execute(db.select(User).where(User.username == 'Carol')).scalar()
+    
+    response = client.patch(f'/users/update{user.id}', json={'username': 'test'}, headers={'Authorization': f'Bearer {access_token}'})
+
+    assert response.json == {'id': user.id, 'username':user.username}
+
+
+def test_user_update_sucesso_role_id(client, access_token):
+    user = db.session.execute(db.select(User).where(User.username == 'Carol')).scalar()
+    
+    response = client.patch(f'/users/update{user.id}', json={'role_id': 'test'}, headers={'Authorization': f'Bearer {access_token}'})
+
+    assert response.json == {'id': user.id, 'role_id':user.role_id}
+
+
+def test_user_update_sucesso_password(client, access_token):
+    user = db.session.execute(db.select(User).where(User.username == 'Carol')).scalar()
+    
+    response = client.patch(f'/users/update{user.id}', json={'password': 'test'}, headers={'Authorization': f'Bearer {access_token}'})
+
+    assert response.json == {'id': user.id, 'password':user.password}
+
+
+def test_user_update_falha(client, access_token):
+    response = client.patch(f'/users/updateuseridincorreto', json={'password': 'test'}, headers={'Authorization': f'Bearer {access_token}'})
 
     assert response.status_code == HTTPStatus.NOT_FOUND

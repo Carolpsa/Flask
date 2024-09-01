@@ -1,5 +1,5 @@
 import pytest
-from flaskr.app import create_app, db, Role, User
+from flaskr.app import create_app, db, Role, User, Post
 
 
 # A configuracao sera igual ao arquivo app.py e o banco de dados nao ira criar um arquivo, rodara em memoria
@@ -53,3 +53,12 @@ def access_token(client):
 
     response = client.post('/auths/login', json={'username': user.username, 'password': user.password})
     return response.json['access_token']
+
+
+@pytest.fixture()
+def cria_post():
+    post = Post(author_id='test', title='test', body = 'test')
+    db.session.add(post)
+    db.session.commit()
+
+    return post
