@@ -3,7 +3,6 @@ from flaskr.app import db
 from flaskr.app import User
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required
-
 from flaskr.utils import requires_roles
 
 appb = Blueprint('user', __name__, url_prefix='/users')

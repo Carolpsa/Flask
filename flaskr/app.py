@@ -123,3 +123,7 @@ class User(db.Model):
 
 # aplicar a migracao down
 # flask --app flaskr.app db downgrade
+
+# ativacao do ambiente virtual
+# rodar sempre com o ambiente virtual ativado, pois o contrario gera problemas para encontrar e importar modulos
+# .\projeto_flask\Scripts\activate
