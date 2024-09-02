@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: sua-aplicacao
-    env: python
-    buildCommand: "poetry install --no-root"
-    startCommand: "poetry run python app.py"
-    pythonVersion: "3.12"

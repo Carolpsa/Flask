@@ -126,4 +126,4 @@ class User(db.Model):
 
 # ativacao do ambiente virtual
 # rodar sempre com o ambiente virtual ativado, pois o contrario gera problemas para encontrar e importar modulos
-# .\projeto_flask\Scripts\activate
+# .venv\Scripts\activate
