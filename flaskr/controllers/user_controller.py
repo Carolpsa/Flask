@@ -1,6 +1,5 @@
 from flask import Blueprint, request
-from flaskr.app import db
-from flaskr.app import User
+from flaskr.models.user import db, User
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required
 from flaskr.utils import requires_roles

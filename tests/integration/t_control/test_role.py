@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from flaskr.app import Role, db
+from flaskr.models.role import Role, db
 
 def test_role_create_sucesso(client, access_token):
     response = client.post('/roles/', json = {'name': 'test'}, headers={'Authorization': f'Bearer {access_token}'})

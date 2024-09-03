@@ -1,5 +1,4 @@
-from flaskr.app import db
-from flaskr.app import User
+from flaskr.models.user import db, User
 from http import HTTPStatus
 from flask_jwt_extended import get_jwt_identity
 from functools import wraps

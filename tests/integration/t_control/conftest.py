@@ -1,16 +1,16 @@
 import pytest
-from flaskr.app import create_app, db, Role, User, Post
+from flaskr.app import create_app
+from flaskr.models.user import User
+from flaskr.models.post import Post
+from flaskr.models.role import Role
+from flaskr.models.base import db
 
 
 # A configuracao sera igual ao arquivo app.py e o banco de dados nao ira criar um arquivo, rodara em memoria
 
 @pytest.fixture()
 def app():
-    app = create_app({
-        'SECRET_KEY':'dev',
-        'SQLALCHEMY_DATABASE_URI':'sqlite://',
-        'JWT_SECRET_KEY': 'test'
-    })
+    app = create_app(environment='testing')
     
     with app.app_context():
         db.create_all()

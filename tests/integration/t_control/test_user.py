@@ -1,8 +1,5 @@
 from http import HTTPStatus
-from flaskr.app import User, db
-import pytest
-from sqlite3 import IntegrityError
-
+from flaskr.models.user import User, db
 
 # como o endpoint espera receber dados json, e necessario passar os parametros utilizando json como parametro da fixture
 # tentei fazer igual ao metodo do modulo user_controller e obtive o erro 415 - media nao suportada

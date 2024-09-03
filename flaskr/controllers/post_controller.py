@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from flaskr.app import db
-from flaskr.app import Post
+from flaskr.models.base import db
+from flaskr.models.post import Post
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required
 
