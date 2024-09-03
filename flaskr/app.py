@@ -4,9 +4,12 @@ from flask import Flask, current_app
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flaskr.models.base import db
+from flask_bcrypt import Bcrypt
 
+# instancia das extensoes
 migrate = Migrate()
 jwt = JWTManager()
+bcrypt = Bcrypt()
 
 # CONFIGURAR O RENDER sem o grupo dev de dependecia, que contem o pytest e pytest-mock que sao utilizados para testes
 # $ poetry install --no-root --without dev
@@ -41,14 +44,34 @@ def create_app(environment = os.environ['ENVIRONMENT']):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    bcrypt.init_app(app)
 
     # registro do blueprint
-    from flaskr.controllers import user_controller, post_controller, auth_controller, role_controller
-    app.register_blueprint(user_controller.appb)
-    app.register_blueprint(post_controller.appb)
-    app.register_blueprint(auth_controller.appb)
-    app.register_blueprint(role_controller.appb)
+    from flaskr.controllers import user, post, auth, role
+    app.register_blueprint(user.appb)
+    app.register_blueprint(post.appb)
+    app.register_blueprint(auth.appb)
+    app.register_blueprint(role.appb)
     
+    # Tratamento de excecao
+    from flask import json
+    from werkzeug.exceptions import HTTPException
+
+
+    @app.errorhandler(HTTPException)
+    def handle_exception(e):
+        """Return JSON instead of HTML for HTTP errors."""
+        # start with the correct headers and status code from the error
+        response = e.get_response()
+        # replace the body with JSON
+        response.data = json.dumps({
+            "code": e.code,
+            "name": e.name,
+            "description": e.description,
+        })
+        response.content_type = "application/json"
+        return response
+
     return app
 
 # comandos
@@ -75,3 +98,6 @@ def create_app(environment = os.environ['ENVIRONMENT']):
 # ativacao do ambiente virtual
 # rodar sempre com o ambiente virtual ativado, pois o contrario gera problemas para encontrar e importar modulos
 # .venv\Scripts\activate
+
+# insercao da variavel de ambiente
+# $env:ENVIRONMENT="production"; poetry run flask --app flaskr.app run --debug

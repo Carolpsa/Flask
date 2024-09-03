@@ -3,6 +3,7 @@ from flaskr.models.user import db, User
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required
 from flaskr.utils import requires_roles
+from flaskr.app import bcrypt
 
 appb = Blueprint('user', __name__, url_prefix='/users')
 
@@ -16,7 +17,7 @@ def user_create():
         data = request.json
         user = User(
             username=data['username'],
-            password=data['password'],
+            password=bcrypt.generate_password_hash(data['password']),
             role_id=data['role_id']
         )
         db.session.add(user)
@@ -31,7 +32,7 @@ def user_detail(id):
         user = db.get_or_404(User, id)
     except:
         return{'msg': 'Usuario nao localizado!'}, HTTPStatus.NOT_FOUND
-    return{'id': user.id,'username':user.username, 'password': user.password, 'role_id': user.role_id}
+    return{'id': user.id,'username':user.username, 'role_id': user.role_id}
 
 @appb.route('/delete<int:id>', methods=['GET', 'POST'])
 @jwt_required()
@@ -52,7 +53,7 @@ def user_list():
     users = db.session.execute(db.select(User).order_by(User.id)).scalars()
     result = []
     for user in users:
-        result.append({'id': user.id, 'username':user.username, 'password': user.password, 'role_id': user.role_id})
+        result.append({'id': user.id, 'username':user.username, 'role_id': user.role_id})
     return result
 
 @appb.route('/update<int:id>', methods=['PATCH'])
@@ -68,9 +69,9 @@ def update_user(id):
         db.session.commit()
         return{'id': user.id,'username':user.username}
     if 'password' in data:
-        user.password = data['password']
+        user.password = bcrypt.generate_password_hash(data['password'])
         db.session.commit()
-        return{'id': user.id,'password': user.password}
+        return{'msg': 'Password atualizado'}
     if 'role_id' in data:
         user.role_id = data['role_id']
         db.session.commit()
