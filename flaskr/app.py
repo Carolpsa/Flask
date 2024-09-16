@@ -5,11 +5,13 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flaskr.models.base import db
 from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
 
 # instancia das extensoes
 migrate = Migrate()
 jwt = JWTManager()
 bcrypt = Bcrypt()
+ma = Marshmallow()
 
 # CONFIGURAR O RENDER sem o grupo dev de dependecia, que contem o pytest e pytest-mock que sao utilizados para testes
 # $ poetry install --no-root --without dev
@@ -41,10 +43,14 @@ def create_app(environment = os.environ['ENVIRONMENT']):
     #app.cli.add_command(init_db_command)
     
     # inicializacao de extensoes
+    # existe uma ordem correta de importacao, ver na doc
+    # Flask-SQLAlchemy must be initialized before Flask-Marshmallow.
+
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    ma.init_app(app)
 
     # registro do blueprint
     from flaskr.controllers import user, post, auth, role
@@ -101,3 +107,5 @@ def create_app(environment = os.environ['ENVIRONMENT']):
 
 # insercao da variavel de ambiente
 # $env:ENVIRONMENT="production"; poetry run flask --app flaskr.app run --debug
+
+# $env:ENVIRONMENT="development"; poetry run flask --app flaskr.app run --debug
